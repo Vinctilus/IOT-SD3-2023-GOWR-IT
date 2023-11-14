@@ -1,0 +1,5 @@
+{
+    "Tempartur_and_Humity_Sensor": {
+        "GPIO_pin": 4        
+    }
+}
