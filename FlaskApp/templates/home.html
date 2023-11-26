@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grow-IT</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.0.12.min.js"></script>
+</head>
+
+<body>
+    <nav>
+        <p class="Grow-IT">Grow-IT</p>
+        <a href="/logout">logout</a>
+    </nav>
+    <div id="list">
+    </div>
+    <footer>
+        <p>by @Vinctlius Vincent Theis </p>
+    </footer>
+
+    <script>
+
+
+
+
+
+
+        var setup = '{{ setup|safe }}';
+        var pubnubcontektions = JSON.parse(setup);
+        var pubnubchannels = {}
+        for (channel in pubnubcontektions) {
+            pubnubchannels[channel] = new PubNub(pubnubcontektions[channel]);
+            pubnubchannels[channel].subscribe({ channels: [channel], withPresence: true });
+
+            pubnubchannels[channel].addListener({
+                message: function (message) {
+                    // Get message
+                    var data = message.message;
+                    var channel = message.channel;
+                    // Get Elements
+                    var form = document.getElementById(channel)
+                    var tempartur = form.querySelector('[name="tempartur"]');
+                    var humity = form.querySelector('[name="humity"]');
+                    var light = form.querySelector('[name="light"]');
+                    var soil = form.querySelector('[name="soil"]');
+                    var name = form.querySelector('span output[name="Seneroname"]');
+                    var time = form.querySelector('span output[name="time"]');
+
+                    //Update
+                    name.textContent = data["name"] + ":";
+                    time.textContent = data["time"]
+                    tempartur.textContent = data["tempartur"] + "°C";
+                    humity.textContent = data["humity"] + "%";
+                    light.checked = data["light"];
+                    soil.checked = data["soil"];
+                }
+            });
+            var data = pubnubcontektions[channel]["data"]
+            //create form
+            var form = document.createElement('form');
+            form.id = channel;
+            form.action = '/table';
+            form.method = 'POST';
+            // Name
+            var nameP = document.createElement('output');
+            nameP.textContent = data["name"];
+            nameP.name = 'Seneroname';
+            nameP.classList.add('ChennalName');
+            //Time
+            var timeP = document.createElement('output');
+            timeP.textContent = data["time"];
+            timeP.name = 'time';
+            timeP.classList.add('ChennalTime');
+
+
+            //Tempratur
+            var tempP = document.createElement('p');
+            tempP.textContent = 'Tempartur: ';
+            var tempOut = document.createElement('output');
+            tempOut.textContent = data["tempartur"] + "°c";
+            tempOut.name = 'tempartur';
+            tempP.appendChild(tempOut);
+
+            // Humity
+            var humityP = document.createElement('p');
+            humityP.textContent = 'Humity: ';
+            var humityOut = document.createElement('output');
+            humityOut.textContent = data["humity"] + "%";
+            humityOut.name = 'humity';
+            humityP.appendChild(humityOut);
+
+            // Light
+            var lightP = document.createElement('p');
+            lightP.textContent = 'Light: ';
+            var lightCheckbox = document.createElement('input');
+            lightCheckbox.type = 'checkbox';
+            lightCheckbox.classList.add('nonetogel');
+            lightCheckbox.name = 'light';
+            lightCheckbox.checked = data["light"];
+            lightP.appendChild(lightCheckbox);
+
+            // Soil
+            var soilP = document.createElement('p');
+            soilP.textContent = 'Soil: ';
+            var soilCheckbox = document.createElement('input');
+            soilCheckbox.type = 'checkbox';
+            soilCheckbox.classList.add('nonetogel');
+            soilCheckbox.name = 'soil';
+            soilCheckbox.checked = data["soil"];
+            soilP.appendChild(soilCheckbox);
+
+
+
+            // to list
+            var hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.id = 'chennal';
+            hiddenField.name = 'chennal';
+            hiddenField.value = channel;
+
+            var submit = document.createElement('button');
+            submit.textContent = "more details"
+
+            // all elemens to form
+            var span = document.createElement('span');
+
+            span.appendChild(nameP);
+            span.appendChild(timeP);
+            form.appendChild(span);
+            form.appendChild(tempP);
+            form.appendChild(humityP);
+            form.appendChild(lightP);
+            form.appendChild(soilP);
+            form.appendChild(hiddenField);
+            form.appendChild(submit);
+            //get to list
+            document.getElementById("list").appendChild(form);
+
+            //
+
+
+        }
+
+
+        donottoggel = document.querySelectorAll('.nonetogel');
+        donottoggel.forEach(element => {
+            element.addEventListener('click', function () {
+                if (this.checked) {
+                    this.checked = false;
+
+                } else {
+                    this.checked = true;
+
+                }
+            })
+
+        });
+
+    </script>
+
+
+</body>
+
+</html>

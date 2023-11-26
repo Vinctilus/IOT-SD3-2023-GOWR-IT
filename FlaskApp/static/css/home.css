@@ -1,0 +1,62 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* Dies stellt sicher, dass der Körper mindestens die volle Höhe des Bildschirms einnimmt. */
+}
+
+.Grow-IT {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: white;
+}
+
+nav {
+    background-color: rgb(78, 141, 78);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+
+}
+
+div[id=list] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+
+}
+div[id=list] form span{display: flex; flex-direction: row; align-items: space-between; justify-content: space-between; margin: 1vw; width: 80vw;}
+div[id=list] form {
+    width: 80vw;
+    border: black solid 2px;
+    border-radius: 1.5vw;
+    margin: 1vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 4vw;
+    padding-right: 4vw;
+
+}
+
+.ChennalName {
+    text-decoration: solid black;
+    font-size: larger;
+    text-decoration: underline black;
+
+}
+
+.ChennalTime{
+    color: gray;
+}
+
+
+footer {
+    background-color: rgb(78, 141, 78);
+    color: white;
+    padding: 10px;
+    margin-top: auto;
+}

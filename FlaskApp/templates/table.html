@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.0.12.min.js"></script>
+
+</head>
+
+<body>
+    <nav>
+        <p class="Grow-IT">Grow-IT</p>
+        <a href="/logout">logout</a>
+    </nav>
+    <h2 id="name">{{ name }}</h2>
+    <table>
+
+        <thead>
+            <tr>
+                <th>time</th>
+                <th>Tempratur</th>
+                <th>Humity</th>
+                <th>Light</th>
+                <th>Soil</th>
+            </tr>
+        </thead>
+        <tbody id="table">
+        </tbody>
+    </table>
+
+    <footer>
+        <p>by @Vinctlius Vincent Theis </p>
+    </footer>
+    <input type="text" id="lasttime" value="" hidden>
+
+    <script>
+        function donottoggel(nottoggel) {
+            nottoggel.addEventListener('click', function () {
+                if (this.checked) {
+                    this.checked = false;
+
+                } else {
+                    this.checked = true;
+
+                }
+            })
+
+        }
+
+        var setup = '{{ setup|safe }}';
+        var pubnubcontektions = JSON.parse(setup);
+        var pubnubchannels = {}
+
+        function createRow(data) {
+            
+            var oldtime = document.getElementById("lasttime")
+            
+
+            
+            if( data["time"] == oldtime.value){}
+            else{
+            document.getElementById("name").textContent = data["name"];
+            oldtime.value = data["time"];
+
+            //create tr
+            var tr = document.createElement('tr');
+
+            //Time
+            var timeTD = document.createElement('td');
+            timeTD.textContent = data["time"];
+            
+            timeTD.classList.add('time')
+            //Tempratur
+            var tempTD = document.createElement('td');
+            tempTD.textContent = data["tempartur"] + "°C";
+            // Humity
+            var humityTD = document.createElement('td');
+            humityTD.textContent = data["humity"] + "%";
+
+            // Light
+            var lightTD = document.createElement('td');
+            var lightCheckbox = document.createElement('input');
+            lightCheckbox.type = 'checkbox';
+            lightCheckbox.checked = data["light"];
+            donottoggel(lightCheckbox);
+            lightTD.appendChild(lightCheckbox);
+
+            // Soil
+            var soilTD = document.createElement('td');
+            var soilCheckbox = document.createElement('input');
+            soilCheckbox.type = 'checkbox';
+            soilCheckbox.checked = data["soil"];
+            donottoggel(soilCheckbox);
+            soilTD.appendChild(soilCheckbox);
+
+
+
+            // all elemens to form
+            tr.appendChild(timeTD);
+            tr.appendChild(tempTD);
+            tr.appendChild(humityTD);
+            tr.appendChild(lightTD);
+            tr.appendChild(soilTD);
+
+            //get to list
+            document.getElementById("table").prepend(tr);
+
+            //
+            var list = document.getElementById("table").children;
+
+            if (list.length >= 2976)// ca 31 days
+            {
+                var table = document.getElementById("table");
+                var toDelete = table.lastChild;
+                table.removeChild(toDelete);
+            }
+        }
+        }
+
+        //page setup 
+
+        
+        channel = Object.keys(pubnubcontektions)[0]
+        pubnubchannels[channel] = new PubNub(pubnubcontektions[channel]);
+            pubnubchannels[channel].subscribe({ channels: [channel], withPresence: true });
+
+            pubnubchannels[channel].addListener({
+            message: function (message) {
+                // Get message
+                var data = message.message;
+                createRow(data)
+            }
+
+        });
+        
+        for(data in pubnubcontektions[channel]["data"]){
+            
+            createRow(pubnubcontektions[channel]["data"][data])
+            
+        }
+
+
+        donottoggellist = document.querySelectorAll('.nonetogel');
+        donottoggellist.forEach(element => {
+            element.addEventListener('click', function () {
+                if (this.checked) {
+                    this.checked = false;
+
+                } else {
+                    this.checked = true;
+
+                }
+            })
+
+        });
+
+    </script>
+
+</body>
+
+</html>
