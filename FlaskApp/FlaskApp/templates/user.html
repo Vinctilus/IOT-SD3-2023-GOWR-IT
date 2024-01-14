@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block head %}
+
+<title>Grow-IT | Admin</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+
+{% endblock %}
+
+
+{% block body %}
+<div class="fix-right">
+    <div class="settings">
+        <p>ID: {{ user['googelid'] }}</p>
+        <p>Name: {{ user['name'] }}</p>
+        <p>Email: {{ user['useremail'] }}</p>
+    </div>
+    <form class="settings" action="/mergeuserto" method="post">
+        <p>Merge account to</p>
+        <p>ID: <input name="googelid1" type="text" value=""></p>
+        <p>Email: <input name="useremail1" type="text" value=""></p>
+        <button>Submit Changes</button>
+        <input name="oldgoogelid1" type="text" value="{{ user['googelid'] }}" hidden>
+        
+    </form>
+    <form class="settings" action="/deleateuser" method="post">
+        <p>delete account</p>
+        <p>Enter Email: <input name="email" type="text" value=""></p>
+        <input name="oldgoogelid" type="text" value="{{ user['googelid'] }}" hidden>
+        <button>Submit Changes</button>
+    </form>
+</div>
+
+<div id="pilist">
+    <h2>Plants conetet To User</h2>
+    {% for pi in piData %}
+    <form class="viewer" action="/device" method="POST" name="p{{ pi['deviceid'] }}">
+        <div class="space-between">
+            <p class="devicename">Name: {{ pi["devicename"] }}</p>
+            <p class="measuredtime">{{ pi["measuredtime"] }}</p>
+        </div>
+        <div class="space-evenly">
+            <p class="tempartur">Temperature: {{ pi["tempartur"] }}</p>
+            <p class="humity">Humity:{{ pi["humity"] }}</p>
+            <p>Light:<input type="checkbox" class="nonetogel light" {{ 'checked' if pi['light'] else '' }}></p>
+            <p>Soil:<input type="checkbox" class="nonetogel soil" {{ 'checked' if pi['soil'] else '' }}></p>
+        </div>
+        <p class="ID">ID:{{ pi["deviceid"] }}</p>
+
+    </form>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+{% block script %}
+
+<script src="{{ url_for('static', filename='js/viewer.js') }}"></script>
+{% endblock %}

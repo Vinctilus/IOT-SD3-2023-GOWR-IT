@@ -1,5 +1,6 @@
 {
-    "Tempartur_and_Humity_Sensor": {
-        "GPIO_pin": 4        
-    }
+  "tempartur": false,
+  "humity": true,
+  "light": false,
+  "soil": true
 }

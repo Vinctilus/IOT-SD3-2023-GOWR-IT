@@ -1,0 +1,67 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;    
+}
+
+.Grow-IT-Logo img {
+    width: auto;
+    height: 60px;
+    padding-right: 10px;
+}
+
+.Grow-IT-Logo {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: white;
+    display: flex;
+    align-items: center;
+    height: 70px;
+}
+
+.Logout {
+    color: white;
+    margin-right: 3vw;
+}
+
+.Logout:visited {
+    color: rgb(255, 255, 255);
+}
+
+.Logout:hover {
+    color: rgb(0, 200, 255);
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    background-color: rgb(78, 141, 78);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+
+
+
+
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    background-color: rgb(78, 141, 78);
+    color: white;
+    padding: 4px;
+    margin-top: auto;
+    font-size: 2vh;
+}
+
+div.content {
+    margin-top: 100px;
+    margin-bottom: 100px;
+    padding: 10px;
+}

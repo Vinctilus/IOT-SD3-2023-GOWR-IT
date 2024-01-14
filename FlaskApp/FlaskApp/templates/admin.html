@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block head %}
+
+<title>Grow-IT | Admin</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/viewer.css') }}">
+
+
+{% endblock %}
+
+
+{% block body %}
+
+<div id="pilist">
+    <h2>PI</h2>
+    {% for pi in piData %}
+    <form class="viewer" action="/device" method="POST" name="p{{ pi['deviceid'] }}">
+        <div class="space-between">
+            <p class="devicename">Name: {{ pi["devicename"] }}</p>
+            <p class="measuredtime">{{ pi["measuredtime"] }}</p>
+        </div>
+        <div class="space-evenly">
+            <p class="tempartur">Temperature: {{ pi["tempartur"] }}</p>
+            <p class="humity">Humity:{{ pi["humity"] }}</p>
+            <p>Light:<input type="checkbox" class="nonetogel light" {{ 'checked' if pi['light'] else '' }}></p>
+            <p>Soil:<input type="checkbox" class="nonetogel soil" {{ 'checked' if pi['soil'] else '' }}></p>
+        </div>
+        <p class="ID">ID:{{ pi["deviceid"] }}</p>
+
+    </form>
+    {% endfor %}
+    <form action="/creatdevice" method="post">
+        <p>Give IT a name<input name="Cratedevice" type="text"></p>
+        <button>create</button>
+    </form>
+    <form action="/deleatdevice" method="post">
+        <p>To deleate enter ID <input name="Deleatedevice" type="text"></p>
+        <button>Deleate</button>
+    </form>
+</div>
+<div id="userlist">
+    <h2>User</h2>
+    {% for user in userData %}
+    <form class="viewer" action="/user" method="POST" name="u{{ user['googelid']}}">
+        <p>Name: {{ user["name"] }}</p>
+        <p>Email: {{ user["useremail"] }}</p>
+
+        <div class="space-evenly">
+            <p>Login:<input type="checkbox" class="nonetogel" {{ 'checked' if user['logedin'] else '' }}></p>
+            <p>{{user["measuredtime"]}}</p>
+        </div>
+        <p class="ID">ID: {{ user["googelid"] }}</p>
+    </form>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+{% block script %}
+
+<script src="{{ url_for('static', filename='js/viewer.js') }}"></script>
+{% endblock %}

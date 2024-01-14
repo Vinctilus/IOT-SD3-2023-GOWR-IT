@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block head %}
+
+<title>Grow-IT | Home</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/viewer.css') }}">
+<script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.0.12.min.js"></script>
+
+{% endblock %}
+
+
+{% block body %}
+
+<div id="pilist">
+    <h2>Your Plants</h2>
+    {% for pi in piData %}
+    <form class="viewer" action="/device" method="POST" name="p{{ pi['deviceid'] }}">
+        <div class="space-between">
+            <p class="devicename">Name: {{ pi["devicename"] }}</p>
+            <p class="measuredtime">{{ pi["measuredtime"] }}</p>
+        </div>
+        <div class="space-evenly">
+            <p class="tempartur">Temperature: {{ pi["tempartur"] if pi["tempartur"] else 'None'}}°C</p>
+            <p class="humity">Humidity: {{ pi["humity"] if pi["humity"] else 'None'}}%</p>
+            <p>Light:<input type="checkbox" class="nonetogel light" {{ 'checked' if pi['light'] else '' }}></p>
+            <p>Soil:<input type="checkbox" class="nonetogel soil" {{ 'checked' if pi['soil'] else '' }}></p>
+        </div>
+        <p class="ID">ID:{{ pi["deviceid"] if pi["deviceid"] else "" }}</p>
+
+    </form>
+    {% endfor %}
+    <form class="adddevice" action="/adddevice" method="post" style="border: black solid 2px; border-radius: 15px; margin: 1vh;padding: 10px 4% 10px 4%;">
+        <p>Add device: <input name="adddevice" type="text" autocomplete="off" autocapitalize="off"> <button>Add</button></p>
+    </form>
+</div>
+<div class="messagesContainer">
+
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+<script>
+    const pubnub = new PubNub({
+        publishKey: "pub-c-276e37f0-07ec-4f6c-a8e4-93de5538b16d",
+        subscribeKey: "sub-c-16fec276-b0ed-41c0-9227-5a5234508196",
+        uuid: '{{ chennal|safe }}'
+    });
+    const channel = '{{ chennal|safe }}';
+
+    pubnub.setAuthKey("{{ token|safe }}");
+
+    pubnub.subscribe({ channels: [channel] });
+    pubnub.addListener({
+            message: function (event) {
+                var receivedData = JSON.parse(event.message);
+                var formElement = document.querySelector('form[name="p' + receivedData["deviceid"] + '"]');
+                if (formElement){
+                    devicename = formElement.querySelector(".devicename")
+                    measuredtime =formElement.querySelector(".measuredtime")
+                    tempartur = formElement.querySelector(".tempartur")
+                    humity = formElement.querySelector(".humity")
+                    light = formElement.querySelector(".light")
+                    soil = formElement.querySelector(".soil")
+
+                    devicename.textContent = "Name: "+receivedData["devicename"];
+                    measuredtime.textContent = receivedData["measuredtime"];
+                    tempartur.textContent = "Temperature: "+receivedData["tempartur"] + "°C";
+                    humity.textContent ="Humity: "+ receivedData["humity"] + "%";
+                    light.checked = receivedData["light"];
+                    soil.checked = receivedData["soil"];
+                }
+
+            }
+        });
+
+
+</script>
+<script src="{{ url_for('static', filename='js/viewer.js') }}"></script>
+{% endblock %}

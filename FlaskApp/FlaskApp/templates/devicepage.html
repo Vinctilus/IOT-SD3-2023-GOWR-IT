@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block head %}
+
+<title>Grow-IT | Home</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/graph.css') }}">
+<script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.0.12.min.js"></script>
+
+
+{% endblock %}
+
+
+{% block body %}
+<div class="graphviewer" name="/graph/tempartur/{{ deviceid|safe}}" id="/graph">
+</div>
+
+<div class="graphviewer" name="/graph/humity/{{ deviceid|safe }}" id="/graph">
+</div>
+
+<div class="graphviewer" name="/plank/light/{{ deviceid|safe }}" id="/plank">
+</div>
+
+<div class="graphviewer" name="/plank/soil/{{ deviceid|safe }}" id="/plank">
+</div>
+<div class="rigth">
+<form action="/change_device_settings" method="post">
+    <h3>Devies Settings</h3>
+    <p>Toggel on of Tracking</p>
+    <div class="change_device_settings">
+    <p>Tempartur: <input type="checkbox" name="tempartur"  {{ 'checked' if devicedata['tempartur'] else '' }}></p>
+    <p>Humity: <input type="checkbox" name="humity" {{ 'checked' if devicedata['humity'] else '' }}></p>
+    <p>Light: <input type="checkbox" name="light" {{ 'checked' if devicedata['light'] else '' }}></p>
+    <p>Soil: <input type="checkbox" name="soil" {{ 'checked' if devicedata['soil'] else '' }}></p>
+
+    </div> 
+    <p>Change Name</p> 
+    <p>Name: <input type="text" name="devicename"  value="{{ devicedata['devicename'] }}""></p>
+    <button>Change</button>
+    <input type="text" name="deviceid" value="{{ deviceid }}" hidden>
+</form>
+
+<form action="/deconect_device" method="post">
+    <p>To deconect Enter Device Name</p> 
+    <p>Name: <input type="text" name="name"></p>
+    <button>Deconect</button> 
+    <input type="text" name="deviceid" value="{{ deviceid }}" hidden>
+
+</form>
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+<script>
+       const pubnub = new PubNub({
+        publishKey: "pub-c-276e37f0-07ec-4f6c-a8e4-93de5538b16d",
+        subscribeKey: "sub-c-16fec276-b0ed-41c0-9227-5a5234508196",
+        uuid: '{{ chennal|safe }}'
+    });
+    const channel = '{{ chennal|safe }}';
+
+    pubnub.setAuthKey("{{ token|safe }}");
+    
+    pubnub.subscribe({ channels: [channel] });
+    pubnub.addListener({
+            message: function (event) {
+             
+                syncALLgraph()
+
+            }
+        });
+
+        function syncALLgraph(){
+    document.querySelectorAll("div.graphviewer").forEach((graphviewer)=>{ syncgraph(graphviewer)});
+    }
+    function syncgraph(graphviewer){
+        var svgObject = document.getElementById('svgObject');
+        var svgUrl = graphviewer.getAttribute("name")
+        
+        // Erstelle ein neues SVG-Objekt
+        var newSvgObject = document.createElement('object');
+        newSvgObject.type = "image/svg+xml";
+        newSvgObject.data = svgUrl;
+        newSvgObject.classList.add('graphsvg', 'loading');
+    
+        newSvgObject.onload = function() {
+            this.classList.remove('loading');
+            var box = this.parentElement;
+            
+            while (box.childElementCount>2){
+                
+                box.removeChild(box.firstChild);
+            }
+    
+            
+        };
+        graphviewer.appendChild(newSvgObject);
+    }
+    syncALLgraph()
+</script>
+{% endblock %}

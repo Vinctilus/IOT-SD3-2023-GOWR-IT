@@ -1,0 +1,88 @@
+
+
+div[id=pilist] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;  
+    width: 70vw; 
+
+}
+
+div.content {
+    display: flex;
+    
+}
+
+
+form.viewer .space-between {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+form.viewer .space-evenly {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    
+
+}
+
+
+form {
+    width: 80%;
+    border: black solid 2px;
+    border-radius: 15px;
+    margin: 1vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-left: 4%;
+    padding-right: 4%;
+
+
+}
+form.settings {
+    width: 80%;
+
+    margin: 1vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    padding-right: 10%;
+    margin: 10%;
+
+
+}
+
+.devicename {
+    text-decoration: solid black;
+    font-size: larger;
+    text-decoration: underline black;
+
+}
+
+.measuredtime {
+    color: gray;
+}
+
+.ID {
+    font-size: small;
+    align-self: flex-end;
+    color: rgb(189, 189, 189);
+}
+
+div.pilist{
+   width: 100vw;
+   height: auto;
+
+}
+
+div.fix-right{
+    top: 100px;
+    right: 20px;
+    position: fixed;
+
+}
+
